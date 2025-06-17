@@ -8,16 +8,42 @@ const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const server = http.createServer(app);
+
+// Updated CORS for production
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://cyberpunk-meme.vercel.app/', 
+];
+
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-// Middleware
-app.use(cors());
+// Middleware - Updated CORS
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Cyberpunk Meme Server is running!' });
+});
 
 // Supabase setup
 const supabaseUrl = process.env.SUPABASE_URL;
