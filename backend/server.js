@@ -12,7 +12,7 @@ const server = http.createServer(app);
 // Updated CORS for production
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://cyberpunk-meme.vercel.app/', 
+  'https://cyberpunk-meme.vercel.app', 
 ];
 
 const io = socketIo(server, {
