@@ -291,7 +291,13 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Cyberpunk Meme Server running on port ${PORT}`);
-  console.log('💫 Ready to hack the meme matrix!');
-});
+// For Vercel deployment, we need to export the app
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(PORT, () => {
+    console.log(`🚀 Cyberpunk Meme Server running on port ${PORT}`);
+    console.log('💫 Ready to hack the meme matrix!');
+  });
+}
+
+// Export for Vercel
+module.exports = app;
