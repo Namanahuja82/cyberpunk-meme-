@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './App.css';
 
-const socket = io('http://localhost:5000');
+// Configuration for different environments
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const socket = io(API_BASE_URL);
 
 function App() {
   const [memes, setMemes] = useState([]);
@@ -61,7 +63,7 @@ function App() {
 
   const fetchMemes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/memes');
+      const response = await fetch(`${API_BASE_URL}/api/memes`);
       const data = await response.json();
       setMemes(data);
     } catch (error) {
@@ -71,7 +73,7 @@ function App() {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/leaderboard?top=10');
+      const response = await fetch(`${API_BASE_URL}/api/leaderboard?top=10`);
       const data = await response.json();
       setLeaderboard(data);
     } catch (error) {
@@ -84,7 +86,7 @@ function App() {
     setIsCreating(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/memes', {
+      const response = await fetch(`${API_BASE_URL}/api/memes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +107,7 @@ function App() {
 
   const vote = async (memeId, type) => {
     try {
-      await fetch(`http://localhost:5000/api/memes/${memeId}/vote`, {
+      await fetch(`${API_BASE_URL}/api/memes/${memeId}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +124,7 @@ function App() {
     if (!creditAmount || isNaN(creditAmount)) return;
 
     try {
-      await fetch(`http://localhost:5000/api/memes/${memeId}/bid`, {
+      await fetch(`${API_BASE_URL}/api/memes/${memeId}/bid`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +138,7 @@ function App() {
 
   const generateCaption = async (memeId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/memes/${memeId}/caption`, {
+      const response = await fetch(`${API_BASE_URL}/api/memes/${memeId}/caption`, {
         method: 'POST',
       });
       const data = await response.json();
@@ -149,6 +151,7 @@ function App() {
     }
   };
 
+  // Rest of your component remains the same...
   return (
     <div className="app">
       {/* Terminal Header */}
